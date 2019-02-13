@@ -29,9 +29,12 @@ const s = {
 };
 
 window.onload = () => {
+  const media = d3.select('audio#stretch-sound').node();
+
   d3.select('svg')
       .attr('height', s.height + 'px')
       .attr('width', s.width + 'px');
+
 
   d3.select('svg').on('click', function (d,i,nodes) {
     console.group('click:');
@@ -48,6 +51,8 @@ window.onload = () => {
     // If target's parent has clipPath, increase its radius
     if (clipPathURL) {
       console.log(`clip path found with url ${clipPathURL}. Expanding and adding another layer...`);
+      media.play();
+
       s.level++;
       const openParenIndex = clipPathURL.indexOf('(');
       const closeParenIndex = clipPathURL.indexOf(')');
@@ -76,8 +81,8 @@ window.onload = () => {
           .attr('cy', Math.floor(Math.random() * s.height) - radius)
           .attr('r', radius)
     }
-
-
   });
+
+
 
 };
