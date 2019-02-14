@@ -7,7 +7,7 @@ const colors = {
     '#4A1F6C', // purple
     '#779DAE', // tommy blue
   ],
-  index: 0,
+  index: 2,
   next: function() {
     const modulatedIndex = this.index % this.rainbow.length;
     this.index++;
