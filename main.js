@@ -9,12 +9,9 @@ const colors = {
   ],
   index: 0,
   next: function() {
-    if (this.index >= this.rainbow.length) {
-      this.index = 0;
-      return this.rainbow[this.index];
-    }
-
-    return this.rainbow[this.index++];
+    const modulatedIndex = this.index % this.rainbow.length;
+    this.index++;
+    return this.rainbow[modulatedIndex];
   }
 }
 const radius = 25;
