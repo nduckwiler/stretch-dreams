@@ -1,3 +1,4 @@
+//TODO: enable media to play on top of each
 const colors = {
   rainbow: [
     '#217C8D', // carpet green
@@ -53,8 +54,9 @@ window.onload = () => {
       const openParenIndex = clipPathURL.indexOf('(');
       const closeParenIndex = clipPathURL.indexOf(')');
       const clipPathID = clipPathURL.substring(openParenIndex + 1, closeParenIndex);
+      // Use Math.pow() because ** operator because is not supported in IE
       d3.select(clipPathID + ' circle')
-          .attr('r', Math.max(s.height, s.width));
+          .attr('r', Math.sqrt(Math.pow(200,2) + Math.pow(300,2)));
 
       // Add a nested g and rect with clipPath
       clickedGroup
