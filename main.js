@@ -1,5 +1,3 @@
-// TODO don't add more layers when user clicks outside of clip
-
 const colors = {
   rainbow: [
     '#217C8D', // carpet green
@@ -48,8 +46,9 @@ window.onload = () => {
 
     const clickedGroup = d3.select(d3.event.target.parentNode);
     const clipPathURL = clickedGroup.attr('clip-path');
-    // If target's parent has clipPath, increase its radius
-    if (clipPathURL) {
+    const clipPathLevel = clipPathURL ? clipPathURL.match(/\d+/)[0] : undefined;
+    // If target's parent has clipPath and it matches the current level, increase its radius
+    if (clipPathURL && clipPathLevel == s.level) {
       console.log(`clip path found with url ${clipPathURL}. Expanding and adding another layer...`);
       media.play();
 
