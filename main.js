@@ -15,7 +15,7 @@ const colors = {
     return this.rainbow[modulatedIndex];
   }
 }
-const radius = 25;
+let radius = 25;
 
 // state object
 const s = {
@@ -51,31 +51,58 @@ window.onload = () => {
       media.play();
 
       s.level++;
+      radius = radius - 0.25;
       const openParenIndex = clipPathURL.indexOf('(');
       const closeParenIndex = clipPathURL.indexOf(')');
       const clipPathID = clipPathURL.substring(openParenIndex + 1, closeParenIndex);
+      // Expand the clip and the gradient shadow
       // Use Math.pow() because ** operator because is not supported in IE
       d3.select(clipPathID + ' circle')
-          .attr('r', Math.sqrt(Math.pow(200,2) + Math.pow(300,2)));
+          .transition()
+          .duration(500)
+          .attr('r', Math.sqrt(Math.pow(200,2) + Math.pow(300,2)))
+      clickedGroup.select('circle')
+          .transition()
+          .duration(1500)
+          .attr('r', Math.sqrt(Math.pow(200,2) + Math.pow(300,2)))
 
-      // Add a nested g and rect with clipPath
-      clickedGroup
-        .append('g')
-          .attr('clip-path', 'url(#clip-' + s.level + ')')
-        .append('rect')
+      // Add a clipPath, nested g, and a rect
+      const clipCX = getRandomInt(radius, s.width - radius);
+      const clipCY = getRandomInt(radius, s.height - radius);
+      d3.select('defs')
+        .append('clipPath')
+          .attr('id', 'clip-' + s.level)
+        .append('circle')
+          .attr('cx', clipCX)
+          .attr('cy', clipCY)
+          .attr('r', radius);
+
+      const nestedGroup = clickedGroup.append('g')
+          .attr('clip-path', 'url(#clip-' + s.level + ')');
+
+      nestedGroup.append('rect')
           .attr('x', 0)
           .attr('y', 0)
           .attr('width', s.width)
           .attr('height', s.height)
           .attr('fill', colors.next());
 
-      d3.select('defs')
-        .append('clipPath')
-          .attr('id', 'clip-' + s.level)
-        .append('circle')
-          .attr('cx', getRandomInt(radius, s.width - radius))
-          .attr('cy', getRandomInt(radius, s.height - radius))
+      nestedGroup.append('circle')
+          .attr('cx', clipCX)
+          .attr('cy', clipCY)
           .attr('r', radius)
+          .attr('fill', 'url(#gradient-1)');
+
+      // Add a gradient to the SVG
+      // d3.select(this).append('circle')
+      //    .attr('cx', s.width/2)
+      //    .attr('cy', s.height/2)
+      //    .attr('r', Math.sqrt(Math.pow(200,2) + Math.pow(300,2)) / 2)
+      //    .attr('fill', 'url(#gradient-1)')
+      //    .attr('fill-opacity', '0')
+      //    .transition()
+      //    .duration(1500)
+      //    .attr('fill-opacity', '1');
 
     }
   });
