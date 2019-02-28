@@ -57,14 +57,92 @@ window.onload = () => {
       const clipPathID = clipPathURL.substring(openParenIndex + 1, closeParenIndex);
       // Expand the clip and the gradient shadow
       // Use Math.pow() because ** operator because is not supported in IE
-      d3.select(clipPathID + ' circle')
-          .transition()
-          .duration(500)
-          .attr('r', Math.sqrt(Math.pow(200,2) + Math.pow(300,2)))
+
+      const twizzleLock = {};
+      const twizzleLock2 = {};
+      const plonkLock = {};
+      function twizzle(elem, lock) {
+        d3.select(lock).transition()
+            .duration(2500)
+            .ease(d3.easeCubicOut)
+            .tween('transform', function() {
+              const cx = elem.attr('cx');
+              const cy = elem.attr('cy');
+              const start = `translate(${cx}, ${cy}) scale(1) translate(-${cx}, -${cy})`;
+              const end = `translate(${cx}, ${cy}) scale(8) translate(-${cx}, -${cy})`;
+              const interpolator = d3.interpolateString(start, end);
+              return function(t) { elem.attr('transform', interpolator((t))); };
+            });
+      }
+      function twizzle2(elem) {
+        d3.select(twizzleLock2).transition()
+            .duration(2500)
+            .ease(d3.easeCubic)
+            .tween('transform', function() {
+              const cx = elem.attr('cx');
+              const cy = elem.attr('cy');
+              const start = `translate(${cx}, ${cy}) scale(1) translate(-${cx}, -${cy})`;
+              const end = `translate(${cx}, ${cy}) scale(8) translate(-${cx}, -${cy})`;
+              const interpolator = d3.interpolateString(start, end);
+              return function(t) { elem.attr('transform', interpolator((t))); };
+            });
+      }
+
+      function plonk(elem) {
+        d3.select(plonkLock).transition()
+            .duration(2500)
+            .ease(d3.easeCubicOut)
+            .tween('cx', function() {
+              const cx = elem.attr('cx');
+              const cy = elem.attr('cy');
+              const start = cx;
+              const end = s.width/2;
+              const interpolator = d3.interpolateNumber(start, end);
+              return function(t) { elem.attr('cx', interpolator((t))); };
+            });
+      }
+      // for the clip path
+      function plonk2(elem) {
+        d3.select(plonkLock).transition()
+            .duration(2500)
+            .ease(d3.easeCubicOut)
+            .tween('cx', function() {
+              const cx = elem.select('circle').attr('cx');
+              const cy = elem.select('circle').attr('cy');
+              const start = 'translate(0,0)';
+              const end = `translate(${s.width/2 - cx}, ${s.height/2 - cy})`;
+              const interpolator = d3.interpolateString(start, end);
+              return function(t) { elem.attr('transform', interpolator((t))); };
+            });
+      }
+
+      console.log(clipPathID);
+      const t = d3.transition().duration(500).ease(d3.easeBounce);
+      const animated = d3.select(clipPathID + ' circle');
+      animated
+          .call(twizzle, twizzleLock)
+          // .call(plonk);
+
+      d3.select(clipPathID)
+          .call(plonk2);
+          // .transition()
+          // // .duration(500)
+          // .ease(d3.easeBounce)
+          //   .attr('r', 100);
+          // .attr('r', Math.min(s.width/2, s.height/2))
+          // .attr('cx', s.width/2)
+          // .attr('cy', s.height/2);
+      const end = clickedGroup.select('circle').attr('r') * 8
       clickedGroup.select('circle')
+          // .call(twizzle, twizzleLock2)
           .transition()
-          .duration(1500)
-          .attr('r', Math.sqrt(Math.pow(200,2) + Math.pow(300,2)))
+          .ease(d3.easeCubicOut)
+
+          .duration(2500)
+          .attr('r', end)
+          .attr('cx', s.width/2)
+          .attr('cy', s.height/2);
+
 
       // Add a clipPath, nested g, and a rect
       const clipCX = getRandomInt(radius, s.width - radius);
