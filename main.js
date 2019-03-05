@@ -24,18 +24,46 @@ const s = {
   radius: 25,
 };
 
-// scaleFactor should stay constant regardless of later changes to s.radius
-const scaleFactor = Math.max(s.width, s.height) / (s.radius * 2);
 const stretchDuration = 750;
 
 window.onload = () => {
+  const body = d3.select('body').node();
+  const svg = d3.select('svg');
   const media = d3.select('audio#stretch-sound').node();
 
-  d3.select('svg')
+  s.width = body.clientWidth;
+  s.height = body.clientHeight;
+  svg
       .attr('height', s.height + 'px')
       .attr('width', s.width + 'px');
 
-  d3.select('svg').on('click', function (d,i,nodes) {
+  // scaleFactor should stay constant regardless of later changes to s.radius
+  const scaleFactor = Math.max(s.width, s.height) / (s.radius * 2);
+
+  svg.append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', s.width)
+      .attr('height', s.height)
+      .attr('fill', colors.next());
+
+  const g = svg.append('g')
+      .attr('clip-path', 'url(#clip-1)');
+
+  g.append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', s.width)
+      .attr('height', s.height)
+      .attr('fill', colors.next());
+
+  g.append('circle')
+      .attr('cx', 100)
+      .attr('cy', 100)
+      .attr('r', 25)
+      .attr('fill', 'url(#gradient-1)');
+
+  svg.on('click', function (d,i,nodes) {
     console.group('click:');
     // console.log('Event listener attached to:');
     // console.log(this);
@@ -97,8 +125,9 @@ window.onload = () => {
           .attr('cy', s.height/2);
 
       // Append a clipPath with a circle
-      const clipCX = getRandomInt(s.radius, s.width - s.radius);
-      const clipCY = getRandomInt(s.radius, s.height - s.radius);
+      const newCoords = getCoordsWithinCircle(s.width/2, s.height/2, end);
+      const clipCX = newCoords.x;
+      const clipCY = newCoords.y;
       d3.select('defs')
         .append('clipPath')
           .attr('id', 'clip-' + s.level)
@@ -132,9 +161,32 @@ Helper Functions
 **************/
 
 // Copied from MDN
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#Getting_a_random_integer_between_two_values
-function getRandomInt(min, max) {
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#Getting_a_random_integer_between_two_values_inclusive
+function getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+  return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
+}
+
+// TODO: is it risky to use recursion here at all?
+/*
+* Returns an object with an x and y value that lies within a circle defined by
+* cx, cy, and r
+*/
+function getCoordsWithinCircle(cx, cy, r) {
+  const minX = cx - (Math.random() * r);
+  const maxX = cx + (Math.random() * r);
+  const minY = cy - (Math.random() * r);
+  const maxY = cy + (Math.random() * r);
+
+  let x = getRandomIntInclusive(minX, maxX);
+  let y = getRandomIntInclusive(minY, maxY);
+
+  const leftSide = Math.pow(x - cx, 2) + Math.pow(y - cy, 2);
+  const rightSide = Math.pow(r, 2);
+  if (leftSide <= rightSide) {
+    return {x: x, y: y};
+  } else {
+    return getCoordsWithinCircle(cx, cy, r);
+  }
 }
