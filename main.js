@@ -47,21 +47,37 @@ window.onload = () => {
       .attr('height', s.height)
       .attr('fill', colors.next());
 
-  const g = svg.append('g')
-      .attr('clip-path', 'url(#clip-1)');
+  // const g = svg.append('g')
+  //     .attr('clip-path', 'url(#clip-1)');
 
-  g.append('rect')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('width', s.width)
-      .attr('height', s.height)
-      .attr('fill', colors.next());
+  // g.append('rect')
+  //     .attr('x', 0)
+  //     .attr('y', 0)
+  //     .attr('width', s.width)
+  //     .attr('height', s.height)
+  //     .attr('fill', colors.next());
 
-  g.append('circle')
+  svg.select('defs')
+    .append('circle')
+      .attr('id', 'circle-1')
       .attr('cx', 100)
       .attr('cy', 100)
-      .attr('r', 25)
-      .attr('fill', 'url(#gradient-1)');
+      .attr('r', 25);
+
+  const g = svg.append('g')
+      .attr('id', 'group-1');
+
+  g.append('use')
+      .attr('href', '#circle-1')
+      .attr('xlink:href', '#circle-1')
+      .attr('fill', colors.next());
+
+  svg.select('defs')
+    .append('clipPath')
+      .attr('id', 'clip-1')
+    .append('use')
+      .attr('href', '#circle-1')
+      .attr('xlink:href', '#circle-1');
 
   svg.on('click', function (d,i,nodes) {
     console.group('click:');
@@ -73,15 +89,16 @@ window.onload = () => {
     console.log(d3.event.target.parentNode);
     console.groupEnd();
 
+    const clicked = d3.select(d3.event.target);
     const clickedGroup = d3.select(d3.event.target.parentNode);
-    const clipPathURL = clickedGroup.attr('clip-path');
-    // If clipPathURL is 'url(#clip-3)', then clipPathLevel is '3'
-    const clipPathLevel = clipPathURL ? clipPathURL.match(/\d+/)[0] : undefined;
+    const clickedURL = clicked.attr('href');
+    // If clickedURL is '#circle-3', then clickedLevel is '3'
+    const clickedLevel = clickedURL ? clickedURL.match(/\d+/)[0] : undefined;
 
-    // If target's parent has clipPath and it matches the current level, increase its radius
+    // If target is a <use> and it's linked circle matches the current level, increase its radius
     // AKA If you clicked the latest sphincter...
-    if (clipPathURL && clipPathLevel == s.level) {
-      console.log(`clip path found with url ${clipPathURL}. Expanding and adding another layer...`);
+    if (clicked.node().tagName === 'use' && clickedLevel == s.level) {
+      console.log(`<use> found with href ${clickedURL}. Expanding and adding another layer...`);
       media.play();
 
       s.level++;
@@ -90,68 +107,59 @@ window.onload = () => {
           .duration(stretchDuration)
           .ease(d3.easeBackOut.overshoot(0.5));
 
-      const openParenIndex = clipPathURL.indexOf('(');
-      const closeParenIndex = clipPathURL.indexOf(')');
-      const clipPathID = clipPathURL.substring(openParenIndex + 1, closeParenIndex);
-
-      // Scale up circle within clipPath
-      const clippingCircle = d3.select(clipPathID + ' circle');
-      clippingCircle
-        .transition(stretchTransition)
-          .tween('transform', function() {
-            const cx = this.getAttribute('cx');
-            const cy = this.getAttribute('cy');
-            const start = `translate(${cx}, ${cy}) scale(1) translate(-${cx}, -${cy})`;
-            const end = `translate(${cx}, ${cy}) scale(${scaleFactor}) translate(-${cx}, -${cy})`;
-            const interpolator = d3.interpolateString(start, end);
-            return function(t) { this.setAttribute('transform', interpolator((t))); };
-          });
-
-      // Translate clipPath to center
-      const clipPath = d3.select(clipPathID);
-      const cx = clipPath.select('circle').attr('cx');
-      const cy = clipPath.select('circle').attr('cy');
-      d3.select(clipPathID)
-        .transition(stretchTransition)
-          .attr('transform', `translate(${s.width/2 - cx}, ${s.height/2 - cy})`);
-
-      // Scale up and translate gradient to center
-      const gradientCircle = clickedGroup.select('circle');
-      const end = gradientCircle.attr('r') * scaleFactor;
-      gradientCircle
-        .transition(stretchTransition)
-          .attr('r', end)
-          .attr('cx', s.width/2)
-          .attr('cy', s.height/2);
-
-      // Append a clipPath with a circle
-      const newCoords = getCoordsWithinCircle(s.width/2, s.height/2, end);
+      // Append a group with a use/circle
+      const newCoords = getCoordsWithinCircle(s.width/2, s.height/2, d3.select(clickedURL).attr('r') * scaleFactor);
       const clipCX = newCoords.x;
       const clipCY = newCoords.y;
       d3.select('defs')
-        .append('clipPath')
-          .attr('id', 'clip-' + s.level)
         .append('circle')
+          .attr('id', 'circle-' + s.level)
           .attr('cx', clipCX)
           .attr('cy', clipCY)
           .attr('r', s.radius);
 
-      // Append a nested g containing a rect and a circle for gradient/shading
-      const nestedGroup = clickedGroup.append('g')
-          .attr('clip-path', 'url(#clip-' + s.level + ')');
+      svg.select('defs')
+        .append('clipPath')
+          .attr('id', 'clip-' + s.level)
+        .append('use')
+          .attr('href', '#circle-' + s.level)
+          .attr('xlink:href', '#circle-' + s.level);
 
-      nestedGroup.append('rect')
-          .attr('x', 0)
-          .attr('y', 0)
-          .attr('width', s.width)
-          .attr('height', s.height)
+      const g = svg.append('g')
+          .attr('id', 'group-' + s.level)
+          .attr('clip-path', `url(#clip-${s.level - 1})`);
+
+      g.append('use')
+          .attr('href', '#circle-' + s.level)
+          .attr('xlink:href', '#circle-' + s.level)
           .attr('fill', colors.next());
 
-      nestedGroup.append('circle')
-          .attr('cx', clipCX)
-          .attr('cy', clipCY)
-          .attr('r', s.radius)
-          .attr('fill', 'url(#gradient-1)');
+
+      // Scale up circle within clipPath
+      const usedCircle = d3.select(clickedURL);
+      const cx = usedCircle.attr('cx');
+      const cy = usedCircle.attr('cy');
+
+      usedCircle
+        .transition(stretchTransition)
+        .attr('transform', `translate(${s.width/2 - cx}, ${s.height/2 - cy}) translate(${cx}, ${cy}) scale(${scaleFactor}) translate(-${cx}, -${cy})`);
+
+      // Append a nested g containing a rect and a circle for gradient/shading
+      // const nestedGroup = clickedGroup.append('g')
+      //     .attr('clip-path', 'url(#clip-' + s.level + ')');
+      //
+      // nestedGroup.append('rect')
+      //     .attr('x', 0)
+      //     .attr('y', 0)
+      //     .attr('width', s.width)
+      //     .attr('height', s.height)
+      //     .attr('fill', colors.next());
+      //
+      // nestedGroup.append('circle')
+      //     .attr('cx', clipCX)
+      //     .attr('cy', clipCY)
+      //     .attr('r', s.radius)
+      //     .attr('fill', 'url(#gradient-1)');
     }
   });
 };
