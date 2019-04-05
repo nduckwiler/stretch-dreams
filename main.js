@@ -115,7 +115,9 @@ window.onload = () => {
           .ease(d3.easeBackOut.overshoot(0));
 
       // Append a new circle to be <use>d
-      const newCoords = getCoordsWithinCircle(s.width/2, s.height/2, d3.select(clickedURL).attr('r') * scaleFactor);
+      // if circle was scaled up by scaleFactor, its radius increased by srqt(1/2) * scaleFactor
+      const sqrtOfHalf = Math.sqrt(1/2);
+      const newCoords = getCoordsWithinCircle(s.width/2, s.height/2, d3.select(clickedURL).attr('r') * scaleFactor * sqrtOfHalf, s.width/5);
       const clipCX = newCoords.x;
       const clipCY = newCoords.y;
       const fromCenterX = s.width/2 - clipCX;
@@ -174,39 +176,14 @@ window.onload = () => {
 Helper Functions
 **************/
 
-// Copied from MDN
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#Getting_a_random_integer_between_two_values_inclusive
-function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
-}
-
-// TODO: is it risky to use recursion here at all?
 /*
 * Returns an object with an x and y value that lies within a circle defined by
 * cx, cy, and r
 */
-function getCoordsWithinCircle(cx, cy, r) {
-  const minX = cx - (Math.random() * r);
-  const maxX = cx + (Math.random() * r);
-  const minY = cy - (Math.random() * r);
-  const maxY = cy + (Math.random() * r);
-
-  let x = getRandomIntInclusive(minX, maxX);
-  let y = getRandomIntInclusive(minY, maxY);
-
-  // Definition of a circle:
-  // (x-cx)^2 + (y-cy)^2 = r^2
-  // or
-  // sqrt((x-cx)^2 + (y-cy)^2)) = r
-  // if left side is less than or equal to right side, then point (x,y) is within
-  // circle centered at (cx,cy) with radius r
-  const btwnPointAndCircleCenter = Math.sqrt(Math.pow(x - cx, 2) + Math.pow(y - cy, 2));
-  const btwnPerimeterAndCircleCenter = r;
-  if (btwnPointAndCircleCenter <= btwnPerimeterAndCircleCenter) {
-    return {x: x, y: y};
-  } else {
-    return getCoordsWithinCircle(cx, cy, r);
-  }
+function getCoordsWithinCircle(cx, cy, r, padding) {
+  const newR = (r-padding) * Math.sqrt(Math.random());
+  const theta = Math.random() * 2 * Math.PI;
+  const newX = cx + newR * Math.cos(theta);
+  const newY = cy + newR * Math.sin(theta);
+  return {x: newX, y: newY};
 }
