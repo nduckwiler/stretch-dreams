@@ -196,9 +196,15 @@ function getCoordsWithinCircle(cx, cy, r) {
   let x = getRandomIntInclusive(minX, maxX);
   let y = getRandomIntInclusive(minY, maxY);
 
-  const leftSide = Math.pow(x - cx, 2) + Math.pow(y - cy, 2);
-  const rightSide = Math.pow(r, 2);
-  if (leftSide <= rightSide) {
+  // Definition of a circle:
+  // (x-cx)^2 + (y-cy)^2 = r^2
+  // or
+  // sqrt((x-cx)^2 + (y-cy)^2)) = r
+  // if left side is less than or equal to right side, then point (x,y) is within
+  // circle centered at (cx,cy) with radius r
+  const btwnPointAndCircleCenter = Math.sqrt(Math.pow(x - cx, 2) + Math.pow(y - cy, 2));
+  const btwnPerimeterAndCircleCenter = r;
+  if (btwnPointAndCircleCenter <= btwnPerimeterAndCircleCenter) {
     return {x: x, y: y};
   } else {
     return getCoordsWithinCircle(cx, cy, r);
