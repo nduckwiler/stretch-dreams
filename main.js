@@ -128,7 +128,7 @@ window.onload = () => {
           .attr('cy', clipCY)
           .attr('r', s.radius)
           // Start it off small and farther away from center
-          .attr('transform', `translate(${-fromCenterX},${-fromCenterY}) translate(${clipCX}, ${clipCY}) scale(${0.3}) translate(-${clipCX}, -${clipCY})`)
+          .attr('transform', `translate(${-fromCenterX},${-fromCenterY}) translate(${clipCX}, ${clipCY}) scale(${0.3}) translate(${-clipCX}, ${-clipCY})`)
         .transition(entranceTransition)
           .attr('transform', '');
 
@@ -165,7 +165,7 @@ window.onload = () => {
 
       usedCircle
         .transition(stretchTransition)
-        .attr('transform', `translate(${s.width/2 - cx}, ${s.height/2 - cy}) translate(${cx}, ${cy}) scale(${scaleFactor}) translate(-${cx}, -${cy})`);
+        .attr('transform', `translate(${s.width/2 - cx}, ${s.height/2 - cy}) translate(${cx}, ${cy}) scale(${scaleFactor}) translate(${-cx}, ${-cy})`);
     }
   });
 };
