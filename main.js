@@ -31,6 +31,8 @@ window.onload = () => {
   const svg = d3.select('svg');
   const media = d3.select('audio#stretch-sound').node();
 
+  // Set svg to size of body
+  // which should 100% of viewport (100vw and 100vh)
   s.width = body.clientWidth;
   s.height = body.clientHeight;
   svg
@@ -40,6 +42,7 @@ window.onload = () => {
   // scaleFactor should stay constant regardless of later changes to s.radius
   const scaleFactor = Math.max(s.width, s.height) / (s.radius * 2);
 
+  // Add "background"
   svg.append('rect')
       .attr('x', 0)
       .attr('y', 0)
@@ -57,6 +60,7 @@ window.onload = () => {
   //     .attr('height', s.height)
   //     .attr('fill', colors.next());
 
+  // Define circle for multiple uses
   svg.select('defs')
     .append('circle')
       .attr('id', 'circle-1')
@@ -64,14 +68,23 @@ window.onload = () => {
       .attr('cy', 100)
       .attr('r', 25);
 
+  // Append a <g>
   const g = svg.append('g')
       .attr('id', 'group-1');
 
+  // Append a solid shape <use>ing the circle
   g.append('use')
       .attr('href', '#circle-1')
       .attr('xlink:href', '#circle-1')
       .attr('fill', colors.next());
 
+  // Append a gradient shape <use>ing the circle
+  g.append('use')
+      .attr('href', '#circle-1')
+      .attr('xlink:href', '#circle-1')
+      .attr('fill', 'url(#gradient-1)');
+
+  // Append a clipPath <use>ing the circle
   svg.select('defs')
     .append('clipPath')
       .attr('id', 'clip-1')
@@ -107,7 +120,7 @@ window.onload = () => {
           .duration(stretchDuration)
           .ease(d3.easeBackOut.overshoot(0.5));
 
-      // Append a group with a use/circle
+      // Append a new circle to be <use>d
       const newCoords = getCoordsWithinCircle(s.width/2, s.height/2, d3.select(clickedURL).attr('r') * scaleFactor);
       const clipCX = newCoords.x;
       const clipCY = newCoords.y;
@@ -118,6 +131,7 @@ window.onload = () => {
           .attr('cy', clipCY)
           .attr('r', s.radius);
 
+      // Append a new clipPath <use>ing the new circle
       svg.select('defs')
         .append('clipPath')
           .attr('id', 'clip-' + s.level)
@@ -125,17 +139,25 @@ window.onload = () => {
           .attr('href', '#circle-' + s.level)
           .attr('xlink:href', '#circle-' + s.level);
 
+      // Append a g, clipped by the previous circle
       const g = svg.append('g')
           .attr('id', 'group-' + s.level)
           .attr('clip-path', `url(#clip-${s.level - 1})`);
 
+      // Append a solid shape <use>ing the new circle
       g.append('use')
           .attr('href', '#circle-' + s.level)
           .attr('xlink:href', '#circle-' + s.level)
           .attr('fill', colors.next());
 
+      // Append a gradient shape <use>ing the new circle
+      g.append('use')
+          .attr('href', '#circle-' + s.level)
+          .attr('xlink:href', '#circle-' + s.level)
+          .attr('fill', 'url(#gradient-1)');
 
-      // Scale up circle within clipPath
+
+      // Scale up previous circle. It should scale up all elements <use>ing it
       const usedCircle = d3.select(clickedURL);
       const cx = usedCircle.attr('cx');
       const cy = usedCircle.attr('cy');
