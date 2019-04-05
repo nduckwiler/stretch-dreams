@@ -50,16 +50,6 @@ window.onload = () => {
       .attr('height', s.height)
       .attr('fill', colors.next());
 
-  // const g = svg.append('g')
-  //     .attr('clip-path', 'url(#clip-1)');
-
-  // g.append('rect')
-  //     .attr('x', 0)
-  //     .attr('y', 0)
-  //     .attr('width', s.width)
-  //     .attr('height', s.height)
-  //     .attr('fill', colors.next());
-
   // Define circle for multiple uses
   svg.select('defs')
     .append('circle')
@@ -165,23 +155,6 @@ window.onload = () => {
       usedCircle
         .transition(stretchTransition)
         .attr('transform', `translate(${s.width/2 - cx}, ${s.height/2 - cy}) translate(${cx}, ${cy}) scale(${scaleFactor}) translate(-${cx}, -${cy})`);
-
-      // Append a nested g containing a rect and a circle for gradient/shading
-      // const nestedGroup = clickedGroup.append('g')
-      //     .attr('clip-path', 'url(#clip-' + s.level + ')');
-      //
-      // nestedGroup.append('rect')
-      //     .attr('x', 0)
-      //     .attr('y', 0)
-      //     .attr('width', s.width)
-      //     .attr('height', s.height)
-      //     .attr('fill', colors.next());
-      //
-      // nestedGroup.append('circle')
-      //     .attr('cx', clipCX)
-      //     .attr('cy', clipCY)
-      //     .attr('r', s.radius)
-      //     .attr('fill', 'url(#gradient-1)');
     }
   });
 };
