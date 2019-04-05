@@ -21,7 +21,7 @@ const s = {
   level: 1,
   width: 300,
   height: 200,
-  radius: 25,
+  radius: 50,
 };
 
 const stretchDuration = 750;
@@ -56,7 +56,7 @@ window.onload = () => {
       .attr('id', 'circle-1')
       .attr('cx', 100)
       .attr('cy', 100)
-      .attr('r', 25);
+      .attr('r', s.radius);
 
   // Append a <g>
   const g = svg.append('g')
@@ -110,16 +110,27 @@ window.onload = () => {
           .duration(stretchDuration)
           .ease(d3.easeBackOut.overshoot(0.5));
 
+      const entranceTransition = d3.transition()
+          .duration(stretchDuration)
+          .ease(d3.easeBackOut.overshoot(0));
+
       // Append a new circle to be <use>d
       const newCoords = getCoordsWithinCircle(s.width/2, s.height/2, d3.select(clickedURL).attr('r') * scaleFactor);
       const clipCX = newCoords.x;
       const clipCY = newCoords.y;
+      const fromCenterX = s.width/2 - clipCX;
+      const fromCenterY = s.height/2 - clipCY;
+
       d3.select('defs')
         .append('circle')
           .attr('id', 'circle-' + s.level)
           .attr('cx', clipCX)
           .attr('cy', clipCY)
-          .attr('r', s.radius);
+          .attr('r', s.radius)
+          // Start it off small and farther away from center
+          .attr('transform', `translate(${-fromCenterX},${-fromCenterY}) translate(${clipCX}, ${clipCY}) scale(${0.3}) translate(-${clipCX}, -${clipCY})`)
+        .transition(entranceTransition)
+          .attr('transform', '');
 
       // Append a new clipPath <use>ing the new circle
       svg.select('defs')
