@@ -54,8 +54,8 @@ window.onload = () => {
   svg.select('defs')
     .append('circle')
       .attr('id', 'circle-1')
-      .attr('cx', 100)
-      .attr('cy', 100)
+      .attr('cx', s.width/2)
+      .attr('cy', s.height/2)
       .attr('r', s.radius);
 
   // Append a <g>
