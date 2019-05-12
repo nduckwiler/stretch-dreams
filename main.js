@@ -103,6 +103,7 @@ window.onload = () => {
     // AKA If you clicked the latest sphincter...
     if (clicked.node().tagName === 'use' && clickedLevel == s.level) {
       console.log(`<use> found with href ${clickedURL}. Expanding and adding another layer...`);
+      media.currentTime = 0;
       media.play();
 
       s.level++;
