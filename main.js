@@ -25,6 +25,7 @@ const s = {
 };
 
 const stretchDuration = 750;
+const stretchIncrement = 0.25;
 
 window.onload = () => {
   const body = d3.select('body').node();
@@ -168,6 +169,30 @@ window.onload = () => {
       usedCircle
         .transition(stretchTransition)
         .attr('transform', `translate(${s.width/2 - cx}, ${s.height/2 - cy}) translate(${cx}, ${cy}) scale(${scaleFactor}) translate(${-cx}, ${-cy})`);
+
+      // Incrementally stretch all circles except the latest circle
+      svg.selectAll('defs circle')
+        // Filter out any circle:
+        // - that is the currently clicked level
+        // - with no transform attribute
+        // - with a transform attribute but no scale transformation
+        .filter(function(d,i,nodes) {
+          if ('#' + this.getAttribute('id') === clickedURL) { return false; }
+          const transform = this.getAttribute('transform');
+          if (!transform) { return false; }
+          const matchesArr = this.getAttribute('transform').match(/scale\(([\d\.,]*)\)/);
+          return matchesArr[1];
+        })
+        .transition(stretchTransition)
+          .attr('transform', function(d, i, nodes) {
+            const cx = this.getAttribute('cx');
+            const cy = this.getAttribute('cy');
+            const r = this.getAttribute('r');
+            const transform = this.getAttribute('transform');
+            const matchesArr = transform.match(/scale\(([\d\.,]*)\)/);
+            const currentScale = parseFloat(matchesArr[1]);
+            return `translate(${s.width/2 - cx}, ${s.height/2 - cy}) translate(${cx}, ${cy}) scale(${currentScale+stretchIncrement}) translate(${-cx}, ${-cy})`;
+          })
     }
   });
 };
