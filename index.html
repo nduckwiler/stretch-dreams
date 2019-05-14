@@ -15,10 +15,37 @@ clipPath * {
   transition-property: r;
   transition-duration: 1s;
 }
+
+#landing-container {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: grid;
+  grid-template-columns: 20% 60% 20%;
+  grid-template-rows: 30% 40% 30%;
+  grid-template-areas:
+  "top-left top-mid top-right"
+  "mid-left center mid-right"
+  "btm-left btm-mid btm-right";
+}
+
+#content-container {
+  grid-area: center;
+  text-align: center;
+  color: white;
+}
 </style>
 </head>
 <body>
 
+<div id="landing-container">
+  <div id="content-container">
+    this plays audio okay?
+    <button type="button" id="enter-btn">I understand</button>
+  </div>
+</div>
 
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
@@ -48,7 +75,6 @@ Trimmed with fades in and out
 -->
   <audio
     id="ambience"
-    autoplay
     loop
     src="/assets/midnight-in-the-graveyard.mp3">
         Your browser does not support the

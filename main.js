@@ -30,7 +30,10 @@ const stretchIncrement = 0.25;
 window.onload = () => {
   const body = d3.select('body').node();
   const svg = d3.select('svg');
+  const enterButton = d3.select('#enter-btn');
+  const landingContainer = d3.select('#landing-container');
   const media = d3.select('audio#stretch-sound').node();
+  const ambience = d3.select('audio#ambience').node();
 
   // Set svg to size of body
   // which should 100% of viewport (100vw and 100vh)
@@ -82,6 +85,21 @@ window.onload = () => {
     .append('use')
       .attr('href', '#circle-1')
       .attr('xlink:href', '#circle-1');
+
+
+  enterButton.on('click', async function() {
+    // Attempt to play ambience
+    ambience.volume = 0.8;
+    asyncPlay(ambience);
+
+    landingContainer.transition()
+      .style('background-color', 'rgba(0,0,0,0)')
+      .style('color', 'rgba(255,255,255,0)')
+      .on('end', function(d, i) {
+        d3.select(this).transition()
+            .style('display', 'none');
+      });
+  });
 
   svg.on('click', function (d,i,nodes) {
     console.group('click:');
@@ -212,4 +230,20 @@ function getCoordsWithinCircle(cx, cy, r, padding) {
   const newX = cx + newR * Math.cos(theta);
   const newY = cy + newR * Math.sin(theta);
   return {x: newX, y: newY};
+}
+
+/*
+ * Calls .play() on a HTMLMediaElement
+ * Calls successFn if returned promise resolves
+ * Calls failureFn if returned promise errs
+*/
+async function asyncPlay(node, successFn, failureFn) {
+  try {
+    await node.play();
+    console.log('play successful!');
+    if (successFn) { successFn(); }
+ } catch(err) {
+    console.log(`play unsuccessful: ${err}`);
+    if (failureFn) { failureFn(); }
+  };
 }
