@@ -16,11 +16,18 @@ clipPath * {
   transition-duration: 1s;
 }
 
-#landing-container {
+#landing-container,
+#hud-container,
+#svg-container {
   width: 100vw;
   height: 100vh;
   margin: 0;
+  padding: 0;
   position: absolute;
+}
+
+#landing-container {
+  z-index: 3;
   background-color: rgba(0, 0, 0, 0.75);
   display: grid;
   grid-template-columns: 20% 60% 20%;
@@ -36,6 +43,21 @@ clipPath * {
   text-align: center;
   color: white;
 }
+
+#svg-container {
+  z-index: 1;
+}
+
+#hud-container {
+  z-index: 2;
+  display: flex;
+  justify-content: flex-end;
+}
+
+#button-container {
+  align-self: flex-end;
+}
+
 </style>
 </head>
 <body>
@@ -47,16 +69,24 @@ clipPath * {
   </div>
 </div>
 
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <defs>
-    <radialGradient id="gradient-1">
-      <stop offset="0%" stop-color="black" stop-opacity="0" />
-      <stop offset="80%" stop-color="black" stop-opacity="0" />
-      <stop offset="100%" stop-color="black" stop-opacity=".6" />
-    </radialGradient>
-  </defs>
+<div id="hud-container">
+  <div id="button-container">
 
-</svg>
+  </div>
+</div>
+
+<div id="svg-container">
+  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+      <radialGradient id="gradient-1">
+        <stop offset="0%" stop-color="black" stop-opacity="0" />
+        <stop offset="80%" stop-color="black" stop-opacity="0" />
+        <stop offset="100%" stop-color="black" stop-opacity=".6" />
+      </radialGradient>
+    </defs>
+
+  </svg>
+</div>
 
 <div>
 <!-- From https://www.youtube.com/audiolibrary -->
