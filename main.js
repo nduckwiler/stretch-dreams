@@ -29,7 +29,7 @@ const stretchIncrement = 0.25;
 
 window.onload = () => {
   const body = d3.select('body').node();
-  const svg = d3.select('svg');
+  const svg = d3.select('svg#stretch-dreams');
   const enterButton = d3.select('#enter-btn');
   const landingContainer = d3.select('#landing-container');
   const media = d3.select('audio#stretch-sound').node();
