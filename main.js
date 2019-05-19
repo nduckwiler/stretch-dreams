@@ -102,15 +102,24 @@ window.onload = () => {
       });
   });
 
-  infoButton.on('click', function() {
+  function showHideInfo() {
     const creditsContainer = d3.select('#credits-container');
     const innerContainer = d3.select('#inner-credits-container');
     if (creditsContainer.classed('shown')) {
       d3.selectAll('.credits').classed('shown', false);
+      ambience.volume = 0.8;
     } else {
       d3.selectAll('.credits').classed('shown', true);
+      ambience.volume = 0.3;
     }
+  }
 
+  infoButton.on('click', showHideInfo);
+
+  body.addEventListener('keyup', function(event) {
+    if (event.key == "Escape" || event.key == "Esc") {
+      showHideInfo();
+    }
   });
 
   svg.on('click', function (d,i,nodes) {
