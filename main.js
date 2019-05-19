@@ -31,6 +31,7 @@ window.onload = () => {
   const body = d3.select('body').node();
   const svg = d3.select('svg#stretch-dreams');
   const enterButton = d3.select('#enter-btn');
+  const infoButton = d3.select('#info-btn');
   const landingContainer = d3.select('#landing-container');
   const media = d3.select('audio#stretch-sound').node();
   const ambience = d3.select('audio#ambience').node();
@@ -99,6 +100,17 @@ window.onload = () => {
         d3.select(this).transition()
             .style('display', 'none');
       });
+  });
+
+  infoButton.on('click', function() {
+    const creditsContainer = d3.select('#credits-container');
+    const innerContainer = d3.select('#inner-credits-container');
+    if (creditsContainer.classed('shown')) {
+      d3.selectAll('.credits').classed('shown', false);
+    } else {
+      d3.selectAll('.credits').classed('shown', true);
+    }
+
   });
 
   svg.on('click', function (d,i,nodes) {

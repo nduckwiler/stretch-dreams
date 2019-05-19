@@ -16,7 +16,17 @@ clipPath * {
   transition-duration: 1s;
 }
 
+a {
+  color: hotpink;
+  transition: color 0.25s;
+}
+
+a:hover {
+  color: purple;
+}
+
 #landing-container,
+#credits-container,
 #game-container {
   width: 100vw;
   height: 100vh;
@@ -49,6 +59,7 @@ clipPath * {
 }
 
 #button-container {
+  z-index: 3;
   position: absolute;
   right: 0px;
   bottom: 0px;
@@ -80,6 +91,37 @@ svg#info-icon:hover {
   position: absolute;
 }
 
+.credits {
+  transition-property: transform, background-color;
+  transition-duration: 0.5s;
+}
+
+#credits-container {
+  z-index: 2;
+  height: 0;
+  background-color: rgba(0,0,0,0);
+  color: white;
+}
+
+#credits-container.shown {
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+}
+
+#inner-credits-container {
+  width: 33%;
+  height: 100%;
+  padding: 10px;
+  position: relative;
+  transform: translateX(-100%);
+  background: -webkit-linear-gradient(to right,rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.0));
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.0));
+}
+
+#inner-credits-container.shown {
+  transform: translateX(0%);
+}
+
 </style>
 </head>
 <body>
@@ -90,6 +132,7 @@ svg#info-icon:hover {
     <button type="button" id="enter-btn">I understand</button>
   </div>
 </div>
+
 
 <div id="game-container">
   <div id="button-container">
@@ -113,9 +156,24 @@ svg#info-icon:hover {
           	c-104.8,0-190-85.2-190-190s85.2-190,190-190s190,85.2,190,190S323.6,408.8,218.8,408.8z"/>
         </g>
       </svg>
-
     </button>
   </div>
+  <div id="credits-container" class="credits">
+    <div id="inner-credits-container" class="credits">
+      <h1>stretch dreams</h1>
+      <p>Designed and developed by <a href="https://nickduckwiler.com/" target="_blank" rel="noopener noreferrer">Nick Duckwiler</a>.</p>
+      <p>Made with <a href="https://d3js.org/" target="_blank" rel="noopener noreferrer">d3.js</a>.</p>
+      <h2>credits</h2>
+      <ul>
+        <li>Sound effects from the <a href="https://www.youtube.com/audiolibrary" target="_blank" rel="noopener noreferrer">YouTube Audio Library</a>.
+        <li><a href="http://www.twinmusicom.org/song/252/midnight-in-the-graveyard" target="_blank" rel="noopener noreferrer"><em>Midnight in the Graveyard</em></a> by <a href="http://www.twinmusicom.org/" target="_blank" rel="noopener noreferrer">Twin Musicom</a> is licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>.
+        Trimmed with fades in and out.</li>
+        <li><a href="https://www.flaticon.com/free-icon/information-button_25467" target="_blank" rel="noopener noreferrer"><em>Information button</em></a> by <a href="https://www.flaticon.com/authors/dave-gandy" target="_blank" rel="noopener noreferrer">Dave Gandy</a> is licensed under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer">CC BY 3.0</a>. from <a href="https://www.flaticon.com/" target="_blank" rel="noopener noreferrer">www.flaticon.com</a>.</li>
+      </ul>
+    </div>
+  </div>
+
+
 
   <svg version="1.1" id="stretch-dreams" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
