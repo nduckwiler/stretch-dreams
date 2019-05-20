@@ -32,6 +32,7 @@ window.onload = () => {
   const svg = d3.select('svg#stretch-dreams');
   const enterButton = d3.select('#enter-btn');
   const infoButton = d3.select('#info-btn');
+  const soundButton = d3.select('#sound-btn');
   const landingContainer = d3.select('#landing-container');
   const media = d3.select('audio#stretch-sound').node();
   const ambience = d3.select('audio#ambience').node();
@@ -119,6 +120,30 @@ window.onload = () => {
   body.addEventListener('keyup', function(event) {
     if (event.key == "Escape" || event.key == "Esc") {
       showHideInfo();
+    }
+  });
+
+  function swapActiveIcon(active, inactive) {
+    active.classed('active-icon', false)
+    active.classed('inactive-icon', true)
+    inactive.classed('active-icon', true)
+    inactive.classed('inactive-icon', false)
+  }
+
+  soundButton.on('click', function() {
+    const active = soundButton.select('svg.active-icon');
+    const inactive = soundButton.select('svg.inactive-icon');
+
+    if (active.attr('id') === 'icon-unmuted') {
+      console.log('clicked unmuted icon, muting audio');
+      ambience.pause()
+      media.volume = 0;
+      swapActiveIcon(active, inactive);
+    } else {
+      console.log('clicked muted icon, unmuting audio');
+      ambience.play()
+      media.volume = 1;
+      swapActiveIcon(active, inactive);
     }
   });
 
