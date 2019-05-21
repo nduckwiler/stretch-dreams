@@ -88,7 +88,7 @@ window.onload = () => {
       .attr('href', '#circle-1')
       .attr('xlink:href', '#circle-1');
 
-
+  // Display visuals and audio when enter button is clicked
   enterButton.on('click', async function() {
     // Attempt to play ambience
     ambience.volume = 0.8;
@@ -103,6 +103,7 @@ window.onload = () => {
       });
   });
 
+  // Helper function
   function showHideInfo() {
     const creditsContainer = d3.select('#credits-container');
     const innerContainer = d3.select('#inner-credits-container');
@@ -115,6 +116,7 @@ window.onload = () => {
     }
   }
 
+  // Show or hide info when either info button is clicked or Escape is pressed
   infoButton.on('click', showHideInfo);
 
   body.addEventListener('keyup', function(event) {
@@ -123,6 +125,7 @@ window.onload = () => {
     }
   });
 
+  // Helper function
   function swapActiveIcon(active, inactive) {
     active.classed('active-icon', false)
     active.classed('inactive-icon', true)
@@ -130,6 +133,7 @@ window.onload = () => {
     inactive.classed('inactive-icon', false)
   }
 
+  // Pause/play audio when sound button is clicked
   soundButton.on('click', function() {
     const active = soundButton.select('svg.active-icon');
     const inactive = soundButton.select('svg.inactive-icon');
@@ -147,10 +151,35 @@ window.onload = () => {
     }
   });
 
+  /*
+  From MDN's example for Page Visibility API.
+  https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API#Example
+  */
+  // Set the name of the hidden property and the change event for visibility
+  let hidden, visibilityChange;
+  if (typeof document.hidden !== 'undefined') { // Opera 12.10 and Firefox 18 and later support
+    hidden = 'hidden';
+    visibilityChange = 'visibilitychange';
+  } else if (typeof document.msHidden !== 'undefined') {
+    hidden = 'msHidden';
+    visibilityChange = 'msvisibilitychange';
+  } else if (typeof document.webkitHidden !== 'undefined') {
+    hidden = 'webkitHidden';
+    visibilityChange = 'webkitvisibilitychange';
+  }
+
+  // Pause/play audio when tab is visible/not visible
+  document.addEventListener(visibilityChange, function () {
+    if (document[hidden]) {
+      ambience.pause();
+    } else {
+      ambience.play();
+    }
+  });
+
+  // Main game mechanic when main svg is clicked
   svg.on('click', function (d,i,nodes) {
     console.group('click:');
-    // console.log('Event listener attached to:');
-    // console.log(this);
     console.log('Event target (what was clicked):');
     console.log(d3.event.target);
     console.log('Event target\'s parent:');
