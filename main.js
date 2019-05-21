@@ -145,7 +145,7 @@ window.onload = () => {
       swapActiveIcon(active, inactive);
     } else {
       console.log('clicked muted icon, unmuting audio');
-      ambience.play()
+      asyncPlay(ambience);
       media.volume = 1;
       swapActiveIcon(active, inactive);
     }
@@ -173,7 +173,7 @@ window.onload = () => {
     if (document[hidden]) {
       ambience.pause();
     } else {
-      ambience.play();
+      asyncPlay(ambience);
     }
   });
 
@@ -197,7 +197,7 @@ window.onload = () => {
     if (clicked.node().tagName === 'use' && clickedLevel == s.level) {
       console.log(`<use> found with href ${clickedURL}. Expanding and adding another layer...`);
       media.currentTime = 0;
-      media.play();
+      asyncPlay(media);
 
       s.level++;
       s.radius = s.radius - 0.25;
