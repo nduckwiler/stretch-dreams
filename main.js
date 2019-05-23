@@ -138,13 +138,13 @@ window.onload = () => {
     const active = soundButton.select('svg.active-icon');
     const inactive = soundButton.select('svg.inactive-icon');
 
-    if (active.attr('id') === 'icon-unmuted') {
-      console.log('clicked unmuted icon, muting audio');
+    if (active.attr('id') === 'sound-wave-icon') {
+      console.log('clicked sound wave icon, muting audio');
       ambience.pause()
       media.volume = 0;
       swapActiveIcon(active, inactive);
     } else {
-      console.log('clicked muted icon, unmuting audio');
+      console.log('clicked no-sound icon, unmuting audio');
       asyncPlay(ambience);
       media.volume = 1;
       swapActiveIcon(active, inactive);
@@ -173,7 +173,11 @@ window.onload = () => {
     if (document[hidden]) {
       ambience.pause();
     } else {
-      asyncPlay(ambience);
+      const active = soundButton.select('svg.active-icon');
+      // Only resume audio if it was originally playing when user left tab
+      if (active.attr('id') === 'sound-wave-icon') {
+        asyncPlay(ambience);
+      }
     }
   });
 
