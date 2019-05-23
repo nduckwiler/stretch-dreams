@@ -116,7 +116,10 @@ window.onload = () => {
     }
   }
 
-  // Show or hide info when either info button is clicked or Escape is pressed
+  // Show or hide info when:
+  // - Info button is clicked
+  // - Escape is pressed
+  // - X button is clicked
   infoButton.on('click', showHideInfo);
 
   body.addEventListener('keyup', function(event) {
@@ -124,6 +127,8 @@ window.onload = () => {
       showHideInfo();
     }
   });
+
+  d3.select('button#close-credits').on('click', showHideInfo);
 
   // Helper function
   function swapActiveIcon(active, inactive) {
