@@ -185,40 +185,10 @@ window.onload = () => {
       }
     }
   });
-/* attempt at shiver on hover
-  svg.on('mouseover', function (d,i,nodes) {
-    console.group();
-    console.log('mouseover!');
-    const hoveredGroup = d3.select(this);
-    console.log('d3.event.target: ');
-    console.log(d3.event.target);
-    console.log('id:');
-    console.log(d3.event.target.getAttribute('id'));
-    console.log('href:');
-    console.log(d3.event.target.getAttribute('href'));
-    console.log('tagName');
-    console.log(d3.event.target.tagName);
-    console.groupEnd();
-
-    const hoveredTagName = d3.event.target.tagName;
-    const hoveredHRef = d3.event.target.getAttribute('href');
-    if (hoveredTagName === 'use' && hoveredHRef){
-      const hoveredLevel = hoveredHRef.match(/\d+/);
-      console.log(`hoveredLevel: ${hoveredLevel}`);
-      if (hoveredLevel == s.level) {
-        d3.select(hoveredHRef);
-        console.log(`s.level: ${s.level}`);
-        console.log(hoveredHRef);
-        shiver(d3.select(hoveredHRef), 2, 0.2, 1000);
-      }
-    }
-  });
-  */
 
   // Randomized shiver on current level
   function shiverOnCurrent() {
     const currentCircle = d3.select(`#circle-${s.level}`);
-    if (d3.active(currentCircle.node()));
     shiver(currentCircle, 2, 0.2, 1000);
 
     clearInterval(timer);
