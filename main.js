@@ -186,9 +186,22 @@ window.onload = () => {
     }
   });
 
+  // Randomized shiver on current level
+  function shiverOnCurrent() {
+    const currentCircle = d3.select(`#circle-${s.level}`);
+    shiver(currentCircle, 2, 0.2, 1000);
+
+    clearInterval(timer);
+    const timeArray = [2000, 3000, 4000, 5000];
+    if (!d3.active(currentCircle)) {
+      timer = setInterval(shiverOnCurrent, randRange(timeArray));    
+    }
+  }
+  let timer = setInterval(shiverOnCurrent, 1000);
+
   // Main game mechanic when main svg is clicked
-  svg.on('click', function (d,i,nodes) {
-    console.group('click:');
+  svg.on('mousedown', function (d,i,nodes) {
+    console.group('mousedown:');
     console.log('Event target (what was clicked):');
     console.log(d3.event.target);
     console.log('Event target\'s parent:');
@@ -330,4 +343,31 @@ async function asyncPlay(node, successFn, failureFn) {
     console.log(`play unsuccessful: ${err}`);
     if (failureFn) { failureFn(); }
   };
+}
+
+/* Testing some easing stuff */
+
+function shiver(d3target, amplitude, period, duration) {
+  const easingFunction = d3.easeElasticOut.amplitude(amplitude).period(period);
+  // const target = d3.select(`svg#stretch-dreams defs #circle-${s.level}`);
+  const cx = d3target.attr('cx');
+  const cy = d3target.attr('cy');
+  const transform = d3target.attr('transform');
+  const scale = parseFloat(transform ? transform.match(/scale\(([\d\.]+)/)[1] : 1);
+  console.log(scale);
+  const transformation = `translate(${cx}, ${cy}) scale(${scale+0.1}) translate(${-cx}, ${-cy})`;
+
+  d3target.transition()
+      .ease(easingFunction)
+      .duration(duration)
+      .attr('transform', transformation);
+}
+
+function randRange(data) {
+  if (!Array.isArray(data)) {
+    throw new TypeError("Expected parameter data to be of type array");
+  }
+  const randIndex = Math.floor(data.length * Math.random());
+  const newTime = data[randIndex];
+  return newTime;
 }
