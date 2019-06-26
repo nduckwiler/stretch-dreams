@@ -230,8 +230,8 @@ window.onload = () => {
   let timer = setInterval(shiverOnCurrent, 1000);
 
   // Main game mechanic when main svg is clicked
-  svg.on('click', function (d,i,nodes) {
-    console.group('click:');
+  svg.on('mousedown', function (d,i,nodes) {
+    console.group('mousedown:');
     console.log('Event target (what was clicked):');
     console.log(d3.event.target);
     console.log('Event target\'s parent:');
