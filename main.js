@@ -185,6 +185,49 @@ window.onload = () => {
       }
     }
   });
+/* attempt at shiver on hover
+  svg.on('mouseover', function (d,i,nodes) {
+    console.group();
+    console.log('mouseover!');
+    const hoveredGroup = d3.select(this);
+    console.log('d3.event.target: ');
+    console.log(d3.event.target);
+    console.log('id:');
+    console.log(d3.event.target.getAttribute('id'));
+    console.log('href:');
+    console.log(d3.event.target.getAttribute('href'));
+    console.log('tagName');
+    console.log(d3.event.target.tagName);
+    console.groupEnd();
+
+    const hoveredTagName = d3.event.target.tagName;
+    const hoveredHRef = d3.event.target.getAttribute('href');
+    if (hoveredTagName === 'use' && hoveredHRef){
+      const hoveredLevel = hoveredHRef.match(/\d+/);
+      console.log(`hoveredLevel: ${hoveredLevel}`);
+      if (hoveredLevel == s.level) {
+        d3.select(hoveredHRef);
+        console.log(`s.level: ${s.level}`);
+        console.log(hoveredHRef);
+        shiver(d3.select(hoveredHRef), 2, 0.2, 1000);
+      }
+    }
+  });
+  */
+
+  // Randomized shiver on current level
+  function shiverOnCurrent() {
+    const currentCircle = d3.select(`#circle-${s.level}`);
+    if (d3.active(currentCircle.node()));
+    shiver(currentCircle, 2, 0.2, 1000);
+
+    clearInterval(timer);
+    const timeArray = [2000, 3000, 4000, 5000];
+    if (!d3.active(currentCircle)) {
+      timer = setInterval(shiverOnCurrent, randRange(timeArray));    
+    }
+  }
+  let timer = setInterval(shiverOnCurrent, 1000);
 
   // Main game mechanic when main svg is clicked
   svg.on('click', function (d,i,nodes) {
@@ -330,4 +373,31 @@ async function asyncPlay(node, successFn, failureFn) {
     console.log(`play unsuccessful: ${err}`);
     if (failureFn) { failureFn(); }
   };
+}
+
+/* Testing some easing stuff */
+
+function shiver(d3target, amplitude, period, duration) {
+  const easingFunction = d3.easeElasticOut.amplitude(amplitude).period(period);
+  // const target = d3.select(`svg#stretch-dreams defs #circle-${s.level}`);
+  const cx = d3target.attr('cx');
+  const cy = d3target.attr('cy');
+  const transform = d3target.attr('transform');
+  const scale = parseFloat(transform ? transform.match(/scale\(([\d\.]+)/)[1] : 1);
+  console.log(scale);
+  const transformation = `translate(${cx}, ${cy}) scale(${scale+0.1}) translate(${-cx}, ${-cy})`;
+
+  d3target.transition()
+      .ease(easingFunction)
+      .duration(duration)
+      .attr('transform', transformation);
+}
+
+function randRange(data) {
+  if (!Array.isArray(data)) {
+    throw new TypeError("Expected parameter data to be of type array");
+  }
+  const randIndex = Math.floor(data.length * Math.random());
+  const newTime = data[randIndex];
+  return newTime;
 }
