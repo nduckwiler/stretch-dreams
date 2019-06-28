@@ -2,13 +2,19 @@
 <html>
 <head>
   <title>stretch dreams</title>
-<script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Montserrat|Montserrat+Alternates|Roboto+Condensed|Stylish&display=swap" rel="stylesheet">
+
 
 <style>
 body {
   width: 100vw;
   height: 100vh;
   margin: 0;
+  /* font-family: "Stylish"; */
+  /* font-family: "Montserrat"; */
+  font-family: "Crimson Text";
+  /* font-family: "Roboto Condensed"; */
 }
 
 clipPath * {
@@ -17,16 +23,17 @@ clipPath * {
 }
 
 a {
-  color: hotpink;
+  color: #bee8f3;
   transition: color 0.25s;
 }
 
 a:hover {
-  color: purple;
+  color: #e8c5d1;
 }
 
 button {
   outline-color: white;
+  font-family: inherit;
 }
 
 #landing-container,
@@ -243,8 +250,10 @@ button#close-credits {
     <defs>
       <radialGradient id="gradient-1">
         <stop offset="0%" stop-color="black" stop-opacity="0" />
-        <stop offset="80%" stop-color="black" stop-opacity="0" />
-        <stop offset="100%" stop-color="black" stop-opacity=".6" />
+        <stop offset="20%" stop-color="black" stop-opacity="0" />
+        <stop offset="75%" stop-color="black" stop-opacity=".2" />
+        <stop offset="90%" stop-color="black" stop-opacity=".7" />
+        <stop offset="100%" stop-color="black" stop-opacity=".7" />
       </radialGradient>
     </defs>
 
