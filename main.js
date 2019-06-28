@@ -1,36 +1,11 @@
 //TODO: enable media to play on top of each
-// const colors = {
-//   rainbow: [
-//     '#217C8D', // carpet green
-//     '#834845', // dark pink
-//     '#8D1003', // chuckie orange
-//     '#77628A', // hairtie purple
-//     '#4A1F6C', // purple
-//     '#779DAE', // tommy blue
-//   ],
-// const colors = {
-//   rainbow: [
-//     '#8959B3', 
-//     '#FFE1B3', 
-//     '#CF99FF', 
-//     '#66CC8B', 
-//     '#62B37F', 
-//   ],
-// const colors = {
-//   rainbow: [
-//     '#834845', 
-//     '#FFD6D4', 
-//     '#FF8D87', 
-//     '#806B6A', 
-//     '#CC716C', 
-//   ],
 const colors = {
   rainbow: [
     '#7DCC66',
     '#CC8966', 
     '#99481F', 
     '#FF9E99', 
-    '#D9FFDC' 
+    '#36753d' 
   ],
   index: 2,
   next: function() {
