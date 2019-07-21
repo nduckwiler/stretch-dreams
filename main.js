@@ -91,6 +91,50 @@ window.onload = () => {
       .attr('href', '#circle-1')
       .attr('xlink:href', '#circle-1');
 
+  // Append vignette container
+  const center = {x: s.width / 2, y: s.height / 2};
+  const biggerDimension = s.width > s.height ? s.width : s.height;
+  const vignetteGroup = svg.append('g')
+      .attr('id', 'vignette-container')
+      .style('pointer-events', 'none');
+
+  // Append rectangle of darkness
+  vignetteGroup.append('rect')
+    .attr('id', 'darkness')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', s.width)
+    .attr('height', s.height)
+    .attr('fill', 'black');
+
+  // Append a mask that "colors in the exterior of a circle"
+  const vignetteMask = svg.select('defs')
+    .append('mask')
+      .attr('id', 'vignette-mask');
+
+  // The rectangle represents the part of the target that will be drawn
+  vignetteMask.append('rect')
+      .attr('id', 'outer-shape')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', s.width)
+      .attr('height', s.height)
+      .attr('fill', 'white');
+
+  // The circle represents the part of the target that WILL NOT be drawn
+  // Except a little bit at the edges, thanks to a radial gradient
+  vignetteMask.append('circle')
+      .attr('id', 'inner-shape')
+      .attr('cx', center.x)
+      .attr('cy', center.y)
+      .attr('r', 1)
+      .attr('transform', `translate(${center.x}, ${center.y}) scale(${s.radius*scaleFactor}) translate(${-center.x}, ${-center.y})`)
+      .attr('fill', 'url(#black-to-clear)');
+
+  // Apply the mask to rectangle of darkness
+  vignetteGroup.select('#darkness')
+      .attr('mask', 'url(#vignette-mask)');
+
   // Display visuals and audio when enter button is clicked
   enterButton.on('click', async function() {
     // Attempt to play ambience
@@ -227,10 +271,17 @@ window.onload = () => {
       s.level++;
 
       // Clean up earlier circles
-      // TODO: how can I make this work endlessly?
-      const oldLevel = s.level - 35;
+      const oldLevel = s.level - 25;
       const oldGroup = d3.select(`#group-${oldLevel}`);
-      if (s.level < 60 && oldGroup) { oldGroup.attr('visibility', 'hidden')};
+      if (!oldGroup.empty()) {
+        oldGroup.attr('visibility', 'hidden');
+
+        const oldestVisibleGroup = d3.select('#sphincter-container [visibility=visible]');
+        const oldestVisibleDiameter = oldestVisibleGroup.node().getBoundingClientRect().width;
+
+        vignetteMask.select('#inner-shape')
+            .attr('transform', `translate(${center.x}, ${center.y}) scale(${oldestVisibleDiameter/2}) translate(${-center.x}, ${-center.y})`);
+      }
       
       // Set up for new circle
       s.radius = s.radius - 0.25;
@@ -273,7 +324,8 @@ window.onload = () => {
       // Append a g, clipped by the previous circle
       const g = sphincterGroup.append('g')
           .attr('id', 'group-' + s.level)
-          .attr('clip-path', `url(#clip-${s.level - 1})`);
+          .attr('clip-path', `url(#clip-${s.level - 1})`)
+          .attr('visibility', 'visible');
 
       // Append a solid shape <use>ing the new circle
       g.append('use')
@@ -321,7 +373,7 @@ window.onload = () => {
             return `translate(${s.width/2 - cx}, ${s.height/2 - cy}) translate(${cx}, ${cy}) scale(${currentScale+stretchIncrement}) translate(${-cx}, ${-cy})`;
           })
     }
-  });
+  });  
 };
 
 /**************
