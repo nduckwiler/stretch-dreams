@@ -62,9 +62,13 @@ window.onload = () => {
       .attr('cx', s.width/2)
       .attr('cy', s.height/2)
       .attr('r', s.radius);
+  
+  // Append a <g> for sphincter groups
+  const sphincterGroup = svg.append('g')
+      .attr('id', 'sphincter-container');
 
   // Append a <g>
-  const g = svg.append('g')
+  const g = sphincterGroup.append('g')
       .attr('id', 'group-1');
 
   // Append a solid shape <use>ing the circle
@@ -199,7 +203,7 @@ window.onload = () => {
   let timer = setInterval(shiverOnCurrent, 1000);
 
   // Main game mechanic when main svg is clicked
-  svg.on('mousedown', function (d,i,nodes) {
+  sphincterGroup.on('mousedown', function (d,i,nodes) {
     console.group('mousedown:');
     console.log('Event target (what was clicked):');
     console.log(d3.event.target);
@@ -267,7 +271,7 @@ window.onload = () => {
           .attr('xlink:href', '#circle-' + s.level);
 
       // Append a g, clipped by the previous circle
-      const g = svg.append('g')
+      const g = sphincterGroup.append('g')
           .attr('id', 'group-' + s.level)
           .attr('clip-path', `url(#clip-${s.level - 1})`);
 
