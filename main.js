@@ -1,4 +1,3 @@
-//TODO: enable media to play on top of each
 const colors = {
   rainbow: [
     '#7DCC66',
@@ -93,7 +92,6 @@ window.onload = () => {
 
   // Append vignette container
   const center = {x: s.width / 2, y: s.height / 2};
-  const biggerDimension = s.width > s.height ? s.width : s.height;
   const vignetteGroup = svg.append('g')
       .attr('id', 'vignette-container')
       .style('pointer-events', 'none');
@@ -409,11 +407,9 @@ async function asyncPlay(node, successFn, failureFn) {
   };
 }
 
-/* Testing some easing stuff */
-
+// Adds a transition to the d3target which simulates shiver
 function shiver(d3target, amplitude, period, duration) {
   const easingFunction = d3.easeElasticOut.amplitude(amplitude).period(period);
-  // const target = d3.select(`svg#stretch-dreams defs #circle-${s.level}`);
   const cx = d3target.attr('cx');
   const cy = d3target.attr('cy');
   const transform = d3target.attr('transform');
@@ -427,6 +423,7 @@ function shiver(d3target, amplitude, period, duration) {
       .attr('transform', transformation);
 }
 
+// Returns an element randomly selected from the data array
 function randRange(data) {
   if (!Array.isArray(data)) {
     throw new TypeError("Expected parameter data to be of type array");
