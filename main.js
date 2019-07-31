@@ -271,7 +271,7 @@ window.onload = () => {
       s.level++;
 
       // Clean up earlier circles
-      const oldLevel = s.level - 25;
+      const oldLevel = s.level - 20;
       const oldGroup = d3.select(`#group-${oldLevel}`);
       if (!oldGroup.empty()) {
         oldGroup.attr('visibility', 'hidden');
@@ -296,7 +296,8 @@ window.onload = () => {
       // Append a new circle to be <use>d
       // if circle was scaled up by scaleFactor, its radius increased by srqt(1/2) * scaleFactor
       const sqrtOfHalf = Math.sqrt(1/2);
-      const newCoords = getCoordsWithinCircle(s.width/2, s.height/2, d3.select(clickedURL).attr('r') * scaleFactor * sqrtOfHalf, s.width/5);
+      const calculatedRadius = d3.select(clickedURL).attr('r') * scaleFactor * sqrtOfHalf;
+      const newCoords = getCoordsWithinCircle(s.width/2, s.height/2, calculatedRadius, calculatedRadius/5);
       const clipCX = newCoords.x;
       const clipCY = newCoords.y;
       const fromCenterX = s.width/2 - clipCX;
