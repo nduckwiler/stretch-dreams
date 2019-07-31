@@ -2,13 +2,18 @@
 <html>
 <head>
   <title>stretch dreams</title>
-<script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <!-- <script src="./d3/d3.min.js"></script> -->
+  <link href="https://fonts.googleapis.com/css?family=Crimson+Text&display=swap" rel="stylesheet">
+
 
 <style>
 body {
   width: 100vw;
   height: 100vh;
   margin: 0;
+  font-family: "Crimson Text";
+  font-size: 18px;
 }
 
 clipPath * {
@@ -17,16 +22,18 @@ clipPath * {
 }
 
 a {
-  color: hotpink;
+  color: #bee8f3;
   transition: color 0.25s;
 }
 
 a:hover {
-  color: purple;
+  color: #e8c5d1;
 }
 
 button {
   outline-color: white;
+  font-family: inherit;
+  font-size: 0.8em;
 }
 
 #landing-container,
@@ -63,6 +70,7 @@ button {
   grid-area: center;
   text-align: center;
   color: white;
+  font-size: 1em;
 }
 
 #game-container {
@@ -231,8 +239,8 @@ button#close-credits {
         <li>Sound effects from the <a href="https://www.youtube.com/audiolibrary" target="_blank" rel="noopener noreferrer">YouTube Audio Library</a>.
         <li><a href="http://www.twinmusicom.org/song/252/midnight-in-the-graveyard" target="_blank" rel="noopener noreferrer"><em>Midnight in the Graveyard</em></a> by <a href="http://www.twinmusicom.org/" target="_blank" rel="noopener noreferrer">Twin Musicom</a> is licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>.
         Trimmed with fades in and out.</li>
-        <li><a href="https://www.flaticon.com/free-icon/information-button_25467" target="_blank" rel="noopener noreferrer"><em>Information button</em></a> by <a href="https://www.flaticon.com/authors/dave-gandy" target="_blank" rel="noopener noreferrer">Dave Gandy</a> is licensed under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer">CC BY 3.0</a>. Rrom <a href="https://www.flaticon.com/" target="_blank" rel="noopener noreferrer">www.flaticon.com</a>.</li>
-        <li><a href="https://www.flaticon.com/free-icon/music-player-sound-waves_70385" target="_blank" rel="noopener noreferrer"><em>Music Player Sound Waves</em></a> icon by <a href="https://www.flaticon.com/authors/egor-rumyantsev" target="_blank" rel="noopener noreferrer">Egor Rumyantsev</a> is licensed under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer">CC BY 3.0</a>. Rrom <a href="https://www.flaticon.com/" target="_blank" rel="noopener noreferrer">www.flaticon.com</a>.</li>
+        <li><a href="https://www.flaticon.com/free-icon/information-button_25467" target="_blank" rel="noopener noreferrer"><em>Information button</em></a> by <a href="https://www.flaticon.com/authors/dave-gandy" target="_blank" rel="noopener noreferrer">Dave Gandy</a> is licensed under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer">CC BY 3.0</a>. From <a href="https://www.flaticon.com/" target="_blank" rel="noopener noreferrer">www.flaticon.com</a>.</li>
+        <li><a href="https://www.flaticon.com/free-icon/music-player-sound-waves_70385" target="_blank" rel="noopener noreferrer"><em>Music Player Sound Waves</em></a> icon by <a href="https://www.flaticon.com/authors/egor-rumyantsev" target="_blank" rel="noopener noreferrer">Egor Rumyantsev</a> is licensed under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer">CC BY 3.0</a>. From <a href="https://www.flaticon.com/" target="_blank" rel="noopener noreferrer">www.flaticon.com</a>.</li>
       </ul>
     </div>
   </div>
@@ -243,8 +251,15 @@ button#close-credits {
     <defs>
       <radialGradient id="gradient-1">
         <stop offset="0%" stop-color="black" stop-opacity="0" />
-        <stop offset="80%" stop-color="black" stop-opacity="0" />
-        <stop offset="100%" stop-color="black" stop-opacity=".6" />
+        <stop offset="20%" stop-color="black" stop-opacity="0" />
+        <stop offset="75%" stop-color="black" stop-opacity=".2" />
+        <stop offset="90%" stop-color="black" stop-opacity=".7" />
+        <stop offset="100%" stop-color="black" stop-opacity=".7" />
+      </radialGradient>
+      <radialGradient id="black-to-clear">
+        <stop offset="0%" stop-color="black" stop-opacity="1" />
+        <stop offset="80%" stop-color="black" stop-opacity="1" />
+        <stop offset="100%" stop-color="black" stop-opacity="0" />
       </radialGradient>
     </defs>
 

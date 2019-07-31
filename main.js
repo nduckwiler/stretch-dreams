@@ -1,12 +1,10 @@
-//TODO: enable media to play on top of each
 const colors = {
   rainbow: [
-    '#217C8D', // carpet green
-    '#834845', // dark pink
-    '#8D1003', // chuckie orange
-    '#77628A', // hairtie purple
-    '#4A1F6C', // purple
-    '#779DAE', // tommy blue
+    '#7DCC66',
+    '#CC8966', 
+    '#99481F', 
+    '#FF9E99', 
+    '#36753d' 
   ],
   index: 2,
   next: function() {
@@ -63,9 +61,13 @@ window.onload = () => {
       .attr('cx', s.width/2)
       .attr('cy', s.height/2)
       .attr('r', s.radius);
+  
+  // Append a <g> for sphincter groups
+  const sphincterGroup = svg.append('g')
+      .attr('id', 'sphincter-container');
 
   // Append a <g>
-  const g = svg.append('g')
+  const g = sphincterGroup.append('g')
       .attr('id', 'group-1');
 
   // Append a solid shape <use>ing the circle
@@ -87,6 +89,49 @@ window.onload = () => {
     .append('use')
       .attr('href', '#circle-1')
       .attr('xlink:href', '#circle-1');
+
+  // Append vignette container
+  const center = {x: s.width / 2, y: s.height / 2};
+  const vignetteGroup = svg.append('g')
+      .attr('id', 'vignette-container')
+      .style('pointer-events', 'none');
+
+  // Append rectangle of darkness
+  vignetteGroup.append('rect')
+    .attr('id', 'darkness')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', s.width)
+    .attr('height', s.height)
+    .attr('fill', 'black');
+
+  // Append a mask that "colors in the exterior of a circle"
+  const vignetteMask = svg.select('defs')
+    .append('mask')
+      .attr('id', 'vignette-mask');
+
+  // The rectangle represents the part of the target that will be drawn
+  vignetteMask.append('rect')
+      .attr('id', 'outer-shape')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', s.width)
+      .attr('height', s.height)
+      .attr('fill', 'white');
+
+  // The circle represents the part of the target that WILL NOT be drawn
+  // Except a little bit at the edges, thanks to a radial gradient
+  vignetteMask.append('circle')
+      .attr('id', 'inner-shape')
+      .attr('cx', center.x)
+      .attr('cy', center.y)
+      .attr('r', 1)
+      .attr('transform', `translate(${center.x}, ${center.y}) scale(${s.radius*scaleFactor}) translate(${-center.x}, ${-center.y})`)
+      .attr('fill', 'url(#black-to-clear)');
+
+  // Apply the mask to rectangle of darkness
+  vignetteGroup.select('#darkness')
+      .attr('mask', 'url(#vignette-mask)');
 
   // Display visuals and audio when enter button is clicked
   enterButton.on('click', async function() {
@@ -200,7 +245,7 @@ window.onload = () => {
   let timer = setInterval(shiverOnCurrent, 1000);
 
   // Main game mechanic when main svg is clicked
-  svg.on('mousedown', function (d,i,nodes) {
+  sphincterGroup.on('mousedown', function (d,i,nodes) {
     console.group('mousedown:');
     console.log('Event target (what was clicked):');
     console.log(d3.event.target);
@@ -222,6 +267,21 @@ window.onload = () => {
       asyncPlay(media);
 
       s.level++;
+
+      // Clean up earlier circles
+      const oldLevel = s.level - 20;
+      const oldGroup = d3.select(`#group-${oldLevel}`);
+      if (!oldGroup.empty()) {
+        oldGroup.attr('visibility', 'hidden');
+
+        const oldestVisibleGroup = d3.select('#sphincter-container [visibility=visible]');
+        const oldestVisibleDiameter = oldestVisibleGroup.node().getBoundingClientRect().width;
+
+        vignetteMask.select('#inner-shape')
+            .attr('transform', `translate(${center.x}, ${center.y}) scale(${oldestVisibleDiameter/2}) translate(${-center.x}, ${-center.y})`);
+      }
+      
+      // Set up for new circle
       s.radius = s.radius - 0.25;
       const stretchTransition = d3.transition()
           .duration(stretchDuration)
@@ -234,7 +294,8 @@ window.onload = () => {
       // Append a new circle to be <use>d
       // if circle was scaled up by scaleFactor, its radius increased by srqt(1/2) * scaleFactor
       const sqrtOfHalf = Math.sqrt(1/2);
-      const newCoords = getCoordsWithinCircle(s.width/2, s.height/2, d3.select(clickedURL).attr('r') * scaleFactor * sqrtOfHalf, s.width/5);
+      const calculatedRadius = d3.select(clickedURL).attr('r') * scaleFactor * sqrtOfHalf;
+      const newCoords = getCoordsWithinCircle(s.width/2, s.height/2, calculatedRadius, calculatedRadius/5);
       const clipCX = newCoords.x;
       const clipCY = newCoords.y;
       const fromCenterX = s.width/2 - clipCX;
@@ -260,9 +321,10 @@ window.onload = () => {
           .attr('xlink:href', '#circle-' + s.level);
 
       // Append a g, clipped by the previous circle
-      const g = svg.append('g')
+      const g = sphincterGroup.append('g')
           .attr('id', 'group-' + s.level)
-          .attr('clip-path', `url(#clip-${s.level - 1})`);
+          .attr('clip-path', `url(#clip-${s.level - 1})`)
+          .attr('visibility', 'visible');
 
       // Append a solid shape <use>ing the new circle
       g.append('use')
@@ -310,7 +372,7 @@ window.onload = () => {
             return `translate(${s.width/2 - cx}, ${s.height/2 - cy}) translate(${cx}, ${cy}) scale(${currentScale+stretchIncrement}) translate(${-cx}, ${-cy})`;
           })
     }
-  });
+  });  
 };
 
 /**************
@@ -345,11 +407,9 @@ async function asyncPlay(node, successFn, failureFn) {
   };
 }
 
-/* Testing some easing stuff */
-
+// Adds a transition to the d3target which simulates shiver
 function shiver(d3target, amplitude, period, duration) {
   const easingFunction = d3.easeElasticOut.amplitude(amplitude).period(period);
-  // const target = d3.select(`svg#stretch-dreams defs #circle-${s.level}`);
   const cx = d3target.attr('cx');
   const cy = d3target.attr('cy');
   const transform = d3target.attr('transform');
@@ -363,6 +423,7 @@ function shiver(d3target, amplitude, period, duration) {
       .attr('transform', transformation);
 }
 
+// Returns an element randomly selected from the data array
 function randRange(data) {
   if (!Array.isArray(data)) {
     throw new TypeError("Expected parameter data to be of type array");
